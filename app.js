@@ -1,5 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js';
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, getDocs, deleteDoc } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
+import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -15,6 +16,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // DOM elements
 const cards = document.querySelectorAll('.card');
@@ -24,9 +26,20 @@ const voteHistoryTable = document.getElementById('vote-history').getElementsByTa
 const userNameInput = document.getElementById('user-name');
 const startVotingButton = document.getElementById('start-voting');
 const toggleScoresButton = document.getElementById('toggle-scores');
+const winnerTableBody = document.querySelector('#winner-table tbody');
 
+// Variables
 let currentUserName = '';
 let showScores = false; // Track whether scores are visible
+
+// Sign in anonymously (for simplicity in this example)
+signInAnonymously(auth)
+  .then(() => {
+    console.log("User signed in anonymously.");
+  })
+  .catch((error) => {
+    console.error("Error signing in: ", error);
+  });
 
 // Start voting after user enters their name
 startVotingButton.addEventListener('click', () => {
@@ -67,6 +80,7 @@ cards.forEach(card => {
         user: currentUserName,
         timestamp: serverTimestamp() // Timestamp for sorting
       });
+      console.log("Vote added to Firestore.");
     } catch (error) {
       console.error("Error adding vote: ", error);
     }
@@ -76,11 +90,11 @@ cards.forEach(card => {
 // Real-time listener for votes
 const votesQuery = query(collection(db, 'votes'), orderBy('timestamp'));
 onSnapshot(votesQuery, snapshot => {
-  renderTable(snapshot);
+  renderVoteHistory(snapshot);
 });
 
 // Function to render the vote table
-function renderTable(snapshot) {
+function renderVoteHistory(snapshot) {
   // Clear current table
   voteHistoryTable.innerHTML = '';
 
@@ -114,17 +128,42 @@ toggleScoresButton.addEventListener('click', () => {
   // Manually re-render the table to reflect the change
   const votesQuery = query(collection(db, 'votes'), orderBy('timestamp'));
   onSnapshot(votesQuery, snapshot => {
-    renderTable(snapshot);
+    renderVoteHistory(snapshot);
   });
 });
-
-// References to Winner Section Elements
-const winnerTableBody = document.querySelector('#winner-table tbody');
 
 // Firestore reference for the "winners" collection
 const winnersCollection = collection(db, 'winners');
 
-// Function to Add Winner Data to the Table
+// Function to add winner data to Firestore
+async function addWinnerToFirestore(date, workItem, score) {
+  try {
+    console.log("Adding winner to Firestore...");
+    const docRef = await addDoc(winnersCollection, {
+      date: date,
+      workItem: workItem,
+      score: score,
+      timestamp: serverTimestamp() // Optional timestamp for sorting
+    });
+    console.log("Winner added to Firestore with ID: ", docRef.id);
+  } catch (error) {
+    console.error("Error adding winner: ", error);
+  }
+}
+
+// Real-Time Listener for Winners Collection
+onSnapshot(query(winnersCollection, orderBy('timestamp')), (snapshot) => {
+  console.log("Fetching winners from Firestore...");
+  winnerTableBody.innerHTML = ''; // Clear the table
+
+  // Populate table with winner data
+  snapshot.forEach((doc) => {
+    const winner = doc.data();
+    addWinnerToTable(winner.date, winner.workItem, winner.score);
+  });
+});
+
+// Function to add winner data to the winner table
 function addWinnerToTable(date, workItem, score) {
   const newRow = document.createElement('tr');
   newRow.innerHTML = `
@@ -135,41 +174,32 @@ function addWinnerToTable(date, workItem, score) {
   winnerTableBody.appendChild(newRow);
 }
 
-// Real-Time Listener for Winners Collection
-onSnapshot(query(winnersCollection, orderBy('timestamp')), (snapshot) => {
-  // Clear the table before adding updated data
-  winnerTableBody.innerHTML = '';
-
-  // Populate table with winner data
-  snapshot.forEach((doc) => {
-    const winner = doc.data();
-    addWinnerToTable(winner.date, winner.workItem, winner.score);
+// Debugging function to check if winner data is being added
+async function checkWinnerData() {
+  const snapshot = await getDocs(winnersCollection);
+  snapshot.forEach(doc => {
+    console.log("Winner document:", doc.data());
   });
-});
+}
 
-// Reference to the Clear Votes Button
-const clearVotesButton = document.getElementById('clear-votes');
+// Example usage to check if winners are saved
+checkWinnerData();
 
-// Clear Votes Function
+// Function to clear votes
 async function clearVotes() {
   try {
+    // Retrieve all votes from Firestore and delete them
     const votesSnapshot = await getDocs(collection(db, 'votes'));
-    const batch = db.batch(); // Use a batch to delete multiple documents
-
-    votesSnapshot.forEach((doc) => {
-      batch.delete(doc.ref);
+    votesSnapshot.forEach(async (doc) => {
+      await deleteDoc(doc.ref); // Delete each vote
     });
-
-    await batch.commit(); // Commit the batch
-    console.log('All votes cleared successfully!');
+    console.log("All votes cleared from Firestore.");
   } catch (error) {
-    console.error('Error clearing votes:', error);
+    console.error("Error clearing votes: ", error);
   }
 }
 
-// Event Listener for Clear Votes Button
-clearVotesButton.addEventListener('click', () => {
-  if (confirm('Are you sure you want to clear all votes? This action cannot be undone.')) {
-    clearVotes();
-  }
-});
+// Add the clear button event listener
+const clearVotesButton = document.getElementById('clear-votes');
+clearVotesButton.addEventListener('click', clearVotes);
+
