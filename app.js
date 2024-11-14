@@ -146,3 +146,30 @@ onSnapshot(query(winnersCollection, orderBy('timestamp')), (snapshot) => {
     addWinnerToTable(winner.date, winner.workItem, winner.score);
   });
 });
+
+// Reference to the Clear Votes Button
+const clearVotesButton = document.getElementById('clear-votes');
+
+// Clear Votes Function
+async function clearVotes() {
+  try {
+    const votesSnapshot = await getDocs(collection(db, 'votes'));
+    const batch = db.batch(); // Use a batch to delete multiple documents
+
+    votesSnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    await batch.commit(); // Commit the batch
+    console.log('All votes cleared successfully!');
+  } catch (error) {
+    console.error('Error clearing votes:', error);
+  }
+}
+
+// Event Listener for Clear Votes Button
+clearVotesButton.addEventListener('click', () => {
+  if (confirm('Are you sure you want to clear all votes? This action cannot be undone.')) {
+    clearVotes();
+  }
+});
