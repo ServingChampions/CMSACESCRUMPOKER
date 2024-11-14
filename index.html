@@ -7,23 +7,24 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1> ACE TEAM SCRUM POKER</h1>
+  
+  <div>
+  <h1> ACE TEAM SCRUM POKER </h1> 
+  <h2> CMSNET</h2>
+  </div>
 
   <!-- User Name Input -->
-  <div>
+  <div class="fillblank">
     <label for="user-name">Enter Your Name: </label>
     <input type="text" id="user-name" placeholder="e.g., Stephen">
     <button id="start-voting">Start Voting</button>
   </div>
 
-  <!-- Work Item Input -->
   <div>
+  <!-- Work Item Input -->
+  <div class="fillblank">
     <label for="work-item">Enter Work Item ID: </label>
     <input type="text" id="work-item" placeholder="e.g., CLCTUTD-10000">
-  </div>
-
-  <!-- Current Voting Item -->
-  <div id="current-item">
     <h3>Current Work Item: <span id="work-item-display">None</span></h3>
   </div>
 
@@ -34,16 +35,14 @@
     <button class="card" data-value="3">3</button>
     <button class="card" data-value="5">5</button>
     <button class="card" data-value="8">8</button>
-    <button class="card" data-value="13">13</button>
-    <button class="card" data-value="21">21</button>
+    <button class="card" data-value="13">13+</button>
+    <button class="card" data-value="21">???</button>
   </div>
+</div>
 
   <!-- Show/Hide Score Button -->
   <button id="toggle-scores" style="display: none;">Show Scores</button>
 
-  <div>
-    <button id="clear-votes">Clear Votes</button>
-  </div>
 
   <!-- Vote History -->
   <div>
@@ -62,9 +61,13 @@
     </table>
   </div>
 
+  <div>
+    <button id="clear-votes">Clear Votes</button>
+  </div>
+
   <!-- Winner Section -->
 <div id="winner-section">
-  <h2>Winner Section</h2>
+  <h2>¡ Winner Section !</h2>
 
   <!-- Winner Input Form -->
   <form id="winner-form">
