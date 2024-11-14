@@ -1,3 +1,31 @@
+  /*/
+  SC footer
+  /*/
+  .sc-footer {
+    text-align: right;
+    font-size: 12px;
+    color: #555;
+    padding-top: 10px;
+    margin-top: 20px;
+}
+
+.sc-footer a {
+    color: #024C30;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.sc-footer a img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.sc-footer a:hover {
+    color: #0056b3;
+}
+
 body {
   font-family: Arial, sans-serif;
   display: flex;
