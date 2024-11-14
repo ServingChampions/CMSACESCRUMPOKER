@@ -18,6 +18,15 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// Sign in anonymously
+signInAnonymously(auth)
+  .then(() => {
+    console.log('Signed in anonymously');
+  })
+  .catch((error) => {
+    console.error('Error signing in:', error);
+  });
+
 // DOM elements
 const cards = document.querySelectorAll('.card');
 const workItemInput = document.getElementById('work-item');
