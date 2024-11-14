@@ -153,8 +153,8 @@ clearVotesButton.addEventListener('click', clearVotes);
 const winnerForm = document.getElementById('winner-form');
 const winnerTableBody = document.querySelector('#winner-table tbody');
 
-// Firestore reference for the "winners" collection
-const winnersCollection = collection(db, 'winners');
+// Firestore reference for the "CMSWINNERS" collection
+const winnersCollection = collection(db, 'CMSWINNERS');
 
 // Listen for Winner Form Submission
 winnerForm.addEventListener('submit', async (e) => {
