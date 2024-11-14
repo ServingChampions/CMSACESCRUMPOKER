@@ -1,0 +1,125 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  h1 {
+    margin-bottom: 20px;
+  }
+  
+  input[type="text"] {
+    padding: 5px;
+    font-size: 16px;
+  }
+  
+  .board {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .card {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #000;
+    cursor: pointer;
+    font-size: 20px;
+    background-color: #f0f0f0;
+  }
+  
+  .vote-display {
+    margin-top: 20px;
+  }
+  
+  .vote-display ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .vote-display li {
+    margin: 5px 0;
+  }
+  
+  #vote-history {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  #vote-history th, #vote-history td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  #vote-history th {
+    background-color: #f2f2f2;
+  }
+  
+  /* Ensure the table container is scrollable */
+#vote-history {
+  width: 100%; /* Adjust as needed */
+  max-height: 400px; /* Limit the height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional: border for visibility */
+}
+
+/* Make the table layout consistent */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  background-color: #f4f4f4;
+  position: sticky; /* Keep headers visible during scroll */
+  top: 0;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+#winner-section {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#winner-form {
+  margin-bottom: 20px;
+}
+
+#winner-form input, #winner-form button {
+  margin: 5px;
+  padding: 5px;
+}
+
+#winner-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#winner-table th, #winner-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#winner-table th {
+  background-color: #f4f4f4;
+}
