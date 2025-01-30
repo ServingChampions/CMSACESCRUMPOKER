@@ -124,4 +124,3 @@ clearVotesButton.addEventListener('click', async () => {
     console.error("Error clearing votes: ", error);
   }
 });
-
